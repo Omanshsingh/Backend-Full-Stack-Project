@@ -1,0 +1,375 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap');
+
+/* ── Variables ──────────────────────────────────────────── */
+:root {
+  --coral:     #FF6B6B;
+  --coral-d:   #e85555;
+  --peach:     #FFB347;
+  --peach-d:   #e89e30;
+  --rose:      #FF8FAB;
+  --sky:       #74C0FC;
+  --mint:      #63E6BE;
+  --cream:     #FFF9F0;
+  --card-bg:   #FFFFFF;
+  --surface:   #F7F0E8;
+  --border:    rgba(0,0,0,0.08);
+  --text:      #1a1a1a;
+  --muted:     #888;
+  --radius:    16px;
+  --radius-sm: 10px;
+  --shadow:    0 2px 20px rgba(255,107,107,0.10);
+  --shadow-lg: 0 8px 40px rgba(255,107,107,0.15);
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'Playfair Display', serif;
+}
+
+/* ── Reset ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── App Shell ──────────────────────────────────────────── */
+.app-root { display: flex; flex-direction: column; min-height: 100vh; }
+.main-content { flex: 1; padding-top: 72px; }
+
+/* ── Navbar ─────────────────────────────────────────────── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 64px;
+}
+.navbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navbar-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--coral);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.5px;
+}
+.logo-icon { font-size: 1rem; }
+.navbar-links { display: flex; gap: 8px; align-items: center; }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.nav-link:hover { background: var(--surface); color: var(--text); }
+.nav-link.active { color: var(--coral); background: rgba(255,107,107,0.08); }
+.nav-link.create-btn {
+  background: linear-gradient(135deg, var(--coral), var(--peach));
+  color: white;
+}
+.nav-link.create-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+.nav-link.create-btn.active { color: white; }
+
+/* ── Feed Page ──────────────────────────────────────────── */
+.feed-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+.feed-header { margin-bottom: 36px; }
+.feed-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+.feed-subtitle { font-size: 0.95rem; color: var(--muted); margin-top: 4px; }
+
+/* ── Posts Grid ─────────────────────────────────────────── */
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* ── Post Card ──────────────────────────────────────────── */
+.post-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: fadeUp 0.5s ease both;
+}
+.post-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.post-image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--surface);
+}
+.image-skeleton {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--surface) 25%, #ffe8d6 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+.post-image {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.post-image.loaded { opacity: 1; }
+
+.post-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 60%);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.post-card:hover .post-overlay { opacity: 1; }
+
+.like-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.like-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+.like-btn.liked { color: var(--coral); border-color: var(--coral); background: rgba(255,107,107,0.2); }
+
+.post-caption-wrap { padding: 14px 16px; }
+.post-caption { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+
+/* ── Skeleton Loading ───────────────────────────────────── */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.skeleton-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.skeleton-img {
+  aspect-ratio: 4/3;
+  background: linear-gradient(90deg, var(--surface) 25%, #ffe8d6 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line {
+  height: 14px; margin: 14px 16px 8px;
+  background: var(--surface); border-radius: 6px;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line.short { width: 60%; margin-bottom: 16px; }
+
+/* ── Empty State ────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+.empty-icon {
+  font-size: 3rem;
+  color: var(--coral);
+  margin-bottom: 20px;
+}
+.empty-state h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+.empty-state p { color: var(--muted); margin-bottom: 28px; }
+.empty-cta {
+  display: inline-flex;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, var(--coral), var(--peach));
+  color: white;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.empty-cta:hover { opacity: 0.9; transform: translateY(-2px); }
+
+/* ── Create Page ────────────────────────────────────────── */
+.create-page {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+.create-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  padding: 36px 32px;
+  box-shadow: var(--shadow);
+}
+.create-header { margin-bottom: 28px; }
+.create-title {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+.create-subtitle { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+.create-form { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Drop Zone ──────────────────────────────────────────── */
+.drop-zone {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: var(--radius);
+  border: 2px dashed rgba(255,107,107,0.35);
+  background: #FFF5F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--coral);
+  background: #FFF0EA;
+  transform: scale(1.005);
+}
+.drop-zone.has-preview { border-style: solid; }
+.drop-placeholder { text-align: center; padding: 20px; }
+.drop-icon {
+  width: 64px; height: 64px;
+  background: rgba(255,107,107,0.12);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  color: var(--coral);
+}
+.drop-text { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+.drop-sub { color: var(--muted); font-size: 0.83rem; }
+
+.preview-img { width: 100%; height: 100%; object-fit: cover; }
+.preview-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.drop-zone:hover .preview-overlay { opacity: 1; }
+
+/* ── Caption ────────────────────────────────────────────── */
+.caption-group { display: flex; flex-direction: column; gap: 8px; }
+.caption-label { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.caption-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text);
+  background: var(--cream);
+  resize: none;
+  transition: border-color 0.2s;
+  outline: none;
+  line-height: 1.6;
+}
+.caption-input:focus { border-color: var(--coral); }
+.caption-input::placeholder { color: #bbb; }
+
+/* ── Submit Button ──────────────────────────────────────── */
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--coral), var(--peach));
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.submit-btn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(255,107,107,0.35);
+}
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .feed-title { font-size: 1.7rem; }
+  .create-card { padding: 24px 18px; }
+  .navbar-logo { font-size: 1.25rem; }
+  .nav-link { padding: 8px 10px; font-size: 0.85rem; }
+}

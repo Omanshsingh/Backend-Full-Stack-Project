@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "cd Frontend && npx vite",
+    "build": "cd Frontend && npx vite build",
+    "lint": "cd Frontend && npx eslint .",
+    "preview": "cd Frontend && npx vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.13.6",
+    "react-router-dom": "^7.13.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.2.2"
+  }
+}
