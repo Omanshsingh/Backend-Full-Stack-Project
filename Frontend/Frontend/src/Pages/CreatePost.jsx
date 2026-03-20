@@ -35,7 +35,7 @@ const CreatePost = () => {
     formData.append('image', fileDataRef.current)
 
     try {
-      const response = await axios.post('http://localhost:3000/create-post', formData)
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/create-post`, formData)
       const createdPost = response.data?.post
       if (createdPost) {
         navigate('/feed', { state: { newPost: createdPost } })

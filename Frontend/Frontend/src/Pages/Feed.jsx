@@ -56,7 +56,7 @@ const Feed = () => {
   useEffect(() => {
     let cancelled = false
 
-    axios.get('http://localhost:3000/posts')
+    axios.get(`${import.meta.env.VITE_API_URL}/posts`)
       .then((response) => {
         if (cancelled) return
 
